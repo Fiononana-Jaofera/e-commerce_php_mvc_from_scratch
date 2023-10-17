@@ -283,18 +283,20 @@ return function(Router $router) {
             ],
         ],
         'order-canceled' => [
-            'Jan'   => 50,
-            'Fev'   => 75,
-            'Mar'   => 30,
-            'Avr'   => 90,
-            'Mai'   => 100,
-            'Jui'   => 20,
-            'Juil'  => 50,
-            'Aou'   => 10,
-            'Sep'   => 2,
-            'Oct'   => 78,
-            'Nov'   => 20,
-            'Dec'   => 10,
+            '2023' => [
+                'Jan'   => 50,
+                'Fev'   => 75,
+                'Mar'   => 30,
+                'Avr'   => 90,
+                'Mai'   => 100,
+                'Jui'   => 20,
+                'Juil'  => 50,
+                'Aou'   => 10,
+                'Sep'   => 2,
+                'Oct'   => 78,
+                'Nov'   => 20,
+                'Dec'   => 10,
+            ]
         ]
     ];
 
@@ -327,17 +329,18 @@ return function(Router $router) {
     )->name('list-notification');
     
     $router->add(
-        'GET', '/admin/statistics/{category}',
+        'GET', '/admin/statistics/{category}/{year?}',
         function() use ( $router, $categories, $statistics )
         {
             $parameters = $router->current()->parameters();
             if( $parameters[ 'category' ] == 'order-canceled' ) {
+                $year = ( $parameters[ 'year' ] !== null )? date('Y') : $parameters[ 'year' ];
                 return view(
                     'statistics/stat-diagram',
                     [
                         'admin' => true,
                         'categories' => $categories['statistic'],
-                        'statistics' => $statistics['order-canceled']
+                        'statistics' => $statistics['order-canceled'][ $year ],
                     ]
                 );
             }
