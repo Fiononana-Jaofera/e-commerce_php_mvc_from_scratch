@@ -9,7 +9,7 @@
         <div class="">
             (<span class="fw-lighter mx-2">{{ $product['category'] }}</span>)
         </div>
-        <div class="d-flex flex-row align-items-center my-5">
+        <div class="d-flex flex-row align-items-center mt-5 mb-3">
             <div>
                 <img src="{{ $product['image'] }}" class="card-img" alt="ordinateur" style="height: 300px;">
             </div>
@@ -30,29 +30,29 @@
             </div>
         </div>
         @if($admin == true)
-            <div class="w-100 d-flex justify-content-center mb-5">
-                <a href="/admin/products/update/{{ $product['id'] }}" class="btn btn-primary mx-5">Modifier</a>
-                <button class="btn btn-danger mx-5">Supprimer</button>
-            </div>
-            <div class="card d-flex flex-column w-75 mb-5">
-                <h5 class="text-primary p-3">Voir aussi</h5>
-                <table class="table table-hover table-borderless">
-                    <thead class="table-dark">
-                        <tr>
-                            <th scope="col" class="text-center">Nom</th>
-                            <th scope="col" class="text-center">Correlation</th>
-                        </tr>
-                    </thead>
-                    <tbody class="table-group-divider">
-                        @foreach($product['correlations'] as $key => $correlation)
-                            <tr style="height: 60px;">
-                                <td class="text-center align-middle">{{ $correlation['name'] }}</td>
-                                <td class="text-center align-middle">{{ $correlation['score'] }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+        <div class="card d-flex flex-column w-75 mb-5">
+            <h5 class="text-primary p-3">Voir aussi</h5>
+            <table class="table table-hover table-borderless">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col" class="text-center">Nom</th>
+                        <th scope="col" class="text-center">Correlation</th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    @foreach($product['correlations'] as $key => $correlation)
+                    <tr style="height: 60px;">
+                        <td class="text-center align-middle">{{ $correlation['name'] }}</td>
+                        <td class="text-center align-middle">{{ $correlation['score'] }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        <div class="w-100 d-flex justify-content-center mb-5">
+            <a href="/admin/products/update/{{ $product['id'] }}" class="btn btn-primary mx-5">Modifier</a>
+            <button class="btn btn-danger mx-5">Supprimer</button>
+        </div>
         @endif
     </div>
 </div> 

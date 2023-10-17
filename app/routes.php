@@ -284,7 +284,7 @@ return function(Router $router) {
         ],
         'order-canceled' => [
             '2023' => [
-                'Jan'   => 50,
+                'Jan'   => 100,
                 'Fev'   => 75,
                 'Mar'   => 30,
                 'Avr'   => 90,
