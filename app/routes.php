@@ -283,19 +283,11 @@ return function(Router $router) {
             ],
         ],
         'order-canceled' => [
-            '2023' => [
-                'Jan'   => 100,
-                'Fev'   => 75,
-                'Mar'   => 30,
-                'Avr'   => 90,
-                'Mai'   => 100,
-                'Jui'   => 20,
-                'Juil'  => 50,
-                'Aou'   => 10,
-                'Sep'   => 2,
-                'Oct'   => 78,
-                'Nov'   => 20,
-                'Dec'   => 10,
+            'keys' => ['Jan', 'Fev', 'Mar', 'Avr', 'Mai', 'Jui', 'Juil', 'Aou', 'Sep', 'Oct', 'Nov', 'Dec'],
+            'value' => [
+                '2023' => [ 100, 75, 30, 90, 100, 20, 50, 10, 2, 78, 20, 10],
+                '2022' => [ 50, 10, 100, 76, 98, 54, 87, 87, 78, 90, 95, 23],
+                '2021' => [ 82, 72, 23, 63, 63, 22, 77, 92, 100, 0, 12, 43],
             ]
         ]
     ];
@@ -329,18 +321,19 @@ return function(Router $router) {
     )->name('list-notification');
     
     $router->add(
-        'GET', '/admin/statistics/{category}/{year?}',
+        'GET', '/admin/statistics/{category}',
         function() use ( $router, $categories, $statistics )
         {
             $parameters = $router->current()->parameters();
             if( $parameters[ 'category' ] == 'order-canceled' ) {
-                $year = ( $parameters[ 'year' ] !== null )? date('Y') : $parameters[ 'year' ];
+                $year = date('Y');
                 return view(
                     'statistics/stat-diagram',
                     [
-                        'admin' => true,
-                        'categories' => $categories['statistic'],
-                        'statistics' => $statistics['order-canceled'][ $year ],
+                        'admin'         => true,
+                        'categories'    => $categories['statistic'],
+                        'statistics'    => $statistics['order-canceled'],
+                        'year'          => $year,
                     ]
                 );
             }

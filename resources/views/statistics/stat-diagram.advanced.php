@@ -12,24 +12,29 @@
             style="width: 100px;" 
             class=" d-inline form-control text-center align-middle" 
             type="number" 
-            name="quantity" 
-            id="quantité" 
-            value="2023" 
-            min="0">
+            name="year" 
+            id="year" 
+            value="{{ $year }}" 
+            min="2021"
+            max="{{ $year }}">
     </p>
 
     <div 
         class="card d-flex flex-column align-items-center justify-content-center w-75 mt-4 p-5" 
         style="height: 500px;">
 
-        <div class="d-flex justify-content-around align-items-end border-bottom border-primary w-100 h-75">
-            @foreach($statistics as $key => $value)
-                <div class="bg-danger" style="width: 4px; height: {{ $value }}%"></div>
+        <div 
+            class="d-flex justify-content-around align-items-end border-bottom border-primary w-100 h-75" 
+            id="diagram">
+            @foreach($statistics[ 'value' ] as $year => $values)
+                @foreach($values as $value)
+                    <div class="bg-danger {{ $year }}" style="width: 4px; height: {{ $value }}%;"></div>
+                @endforeach
             @endforeach
         </div>
         <div class="d-flex justify-content-around w-100">
-            @foreach($statistics as $key => $value)
-                <div class="fw-lighter mx-2">{{ $key }}</div>
+            @foreach($statistics[ 'keys' ] as $value)
+                <div class="fw-lighter mx-2">{{ $value }}</div>
             @endforeach
         </div>
 
