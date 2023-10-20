@@ -393,14 +393,10 @@ return function(Router $router) {
     )->name('client-dashboard');
 
     $router->add(
-        'GET', '/admin/orders/{category?}',
+        'GET', '/admin/orders',
         function () use ($router, $orders) {
-            // $parameters = $router->current()->parameters();
-            // $parameters['category'] ??= 'all';
             return view('orders/order-list', [
-                // 'category' => $parameters['category'],
                 'orders' => $orders,
-                // 'delete' => false,
             ] );
         },
     )->name('list-order');
@@ -439,7 +435,7 @@ return function(Router $router) {
 
     $router->add(
         'GET', '/admin/products/new',
-        function () use ($router, $products) {
+        function () {
             return view('products/product-form');
         },
     )->name('new-product');
