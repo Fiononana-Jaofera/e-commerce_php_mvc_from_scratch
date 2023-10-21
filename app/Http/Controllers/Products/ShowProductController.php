@@ -4,13 +4,13 @@ namespace App\Http\Controllers\Products;
 
 use Framework\Routing\Router;
 
-class ShowProductsController
+class ShowProductController
 {
     protected array $products;
     protected Router $router;
     protected bool $isAdmin;
 
-    public function __construct(Router $router, array $products, bool $isAdmin)
+    public function __construct( Router $router, array $products, bool $isAdmin = false )
     {
         $this->router = $router;
         $this->products = $products;
