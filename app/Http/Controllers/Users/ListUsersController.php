@@ -14,7 +14,7 @@ class ListUsersController
     public function handle()
     {
         return view( 
-            'notifications/notification', 
+            'users/user-list', 
             [
                 'admin' => true,
                 'users' => $this->users,

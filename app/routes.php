@@ -2,6 +2,26 @@
 
 use Framework\Routing\Router;
 
+use App\Http\Controllers\Products\OrderedProductsController;
+use App\Http\Controllers\Products\ListProductsController;
+use App\Http\Controllers\Products\ShowProductController;
+use App\Http\Controllers\Products\RegisterProductController;
+use App\Http\Controllers\Products\UpdateProductController;
+use App\Http\Controllers\Products\DeleteProductsController;
+
+use App\Http\Controllers\Notifications\ListNotificationsController;
+
+use App\Http\Controllers\Statistics\ShowStatisticsController;
+
+use App\Http\Controllers\Users\ListUsersController;
+use App\Http\Controllers\Users\LoginUserController;
+use App\Http\Controllers\Users\RegisterUserController;
+
+use App\Http\Controllers\Dashboard\ShowDashboardController;
+
+use App\Http\Controllers\Orders\ListOrdersController;
+
+
 return function(Router $router) {
 
     $products = [
@@ -57,9 +77,9 @@ return function(Router $router) {
         ],
         [
             'id' => 3,
-            'name' => 'Pizza',
+            'name' => 'Soupe',
             'price' => 20,
-            'image' => '../../../images/bulb.png',
+            'image' => '../../../images/soupe.jpg',
             'category' => 'nourritures',
             'origin' => 'Paris',
             'quantity' => 13,
@@ -299,234 +319,83 @@ return function(Router $router) {
 
     $router->add(
         'GET', '/products/ordered',
-        function() use ($products) {
-            return view('products/product-ordered', [
-                'products' => $products
-            ]);
-        } 
+        [ new OrderedProductsController( $products ), 'handle' ]
     )->name('ordered-product');
 
     $router->add(
         'GET', '/admin/notifications',
-        function() use ($notifications)
-        {
-            return view( 
-                'notifications/notification', 
-                [
-                    'admin' => true,
-                    'notifications' => $notifications
-                ] 
-            );
-        }
+        [ new ListNotificationsController( $notifications ), 'handle' ]
     )->name('list-notification');
     
     $router->add(
         'GET', '/admin/statistics/{category}',
-        function() use ( $router, $categories, $statistics )
-        {
-            $parameters = $router->current()->parameters();
-            if( $parameters[ 'category' ] == 'order-canceled' ) {
-                $year = date('Y');
-                return view(
-                    'statistics/stat-diagram',
-                    [
-                        'admin'         => true,
-                        'categories'    => $categories['statistic'],
-                        'statistics'    => $statistics['order-canceled'],
-                        'year'          => $year,
-                    ]
-                );
-            }
-            else {
-                return view( 
-                    'statistics/stat-table', 
-                    [
-                        'admin'         => true,
-                        'categories'    => $categories['statistic'],
-                        'table'        => $statistics[ $parameters[ 'category' ] ],
-                        ] 
-                    );
-                }
-            }
+        [ new ShowStatisticsController( $router, $statistics, $categories ), 'handle' ]
     )->name('view-statistics');
 
     $router->add(
         'GET', '/admin/clients',
-        function() use ($users) 
-        {
-            return view( 
-                'users/user-list', 
-                [
-                    'admin' => true,
-                    'users' => $users,
-                ] 
-            );
-        }
+        [ new ListUsersController( $users ), 'handle' ]
     )->name('list-client');
 
     $router->add(
         'GET', '/admin/clients/{id}/dashboard',
-        function() use ($router, $users, $orders) 
-        {
-            $result = [];
-            $parameters = $router->current()->parameters();
-            foreach ( $orders as $key => $order ) {
-                if ( $order['client'] == $parameters['id'] ) {
-                    $result['orders'][] = $order;
-                }
-            }
-
-            foreach ( $users as $key => $user ) {
-                if ( $user['id'] == $parameters['id'] ) {
-                    $result['user'] = $user;
-                }
-            }
-            return view( 
-                'dashboard/dashboard', 
-                [
-                    'admin' => true,
-                    'user' => $result['user'],
-                    'orders' => $result['orders'],
-                ] 
-            );
-        }
+        [ new ShowDashboardController( $router, $orders, $users, true), 'handle' ]
     )->name('client-dashboard');
 
     $router->add(
-        'GET', '/admin/orders/{category?}',
-        function () use ($router, $orders) {
-            // $parameters = $router->current()->parameters();
-            // $parameters['category'] ??= 'all';
-            return view('orders/order-list', [
-                // 'category' => $parameters['category'],
-                'orders' => $orders,
-                // 'delete' => false,
-            ] );
-        },
+        'GET', '/admin/orders',
+        [ new ListOrdersController( $orders ), 'handle' ]
     )->name('list-order');
 
     $router->add(
         'GET', '/admin/products/view/{id}',
-        function() use ($router, $products) {
-            $parameters = $router->current()->parameters();
-            foreach( $products as $key => $product) {
-                if( $product['id'] == $parameters['id'] ) {
-                    return view('products/product-details', [
-                        'admin' => true,
-                        'product' => $product
-                    ] );
-                }
-                else continue;
-            }
-        }
+        [ new ShowProductController( $router, $products, true ), 'handle' ]
     )->name('view-product-admin');
 
     $router->add(
         'GET', '/products/view/{id}',
-        function() use ($router, $products) {
-            $parameters = $router->current()->parameters();
-            foreach( $products as $key => $product) {
-                if( $product['id'] == $parameters['id'] ) {
-                    return view('products/product-details', [
-                        'admin' => false,
-                        'product' => $product
-                    ] );
-                }
-                else continue;
-            }
-        }
+        [ new ShowProductController( $router, $products ), 'handle' ]
     )->name('view-product');
 
     $router->add(
         'GET', '/admin/products/new',
-        function () use ($router, $products) {
-            return view('products/product-form');
-        },
+        [ RegisterProductController::class, 'handle' ]
     )->name('new-product');
 
     $router->add(
         'GET', '/admin/products/update/{id}',
-        function () use ($router, $products) {
-            $parameters = $router->current()->parameters();
-            foreach( $products as $key => $product ) {
-                if( $product['id'] == $parameters['id'] ) {
-                    return view('products/product-form', [
-                        'update' => true,
-                        'product' => $product,
-                    ]);
-                }
-                else continue;
-            }
-        },
+        [ new UpdateProductController( $router, $products ), 'handle' ]
     )->name('update-product');
 
     $router->add(
         'GET', '/admin/products/delete/{category?}',
-        function () use ($router, $products) {
-            $parameters = $router->current()->parameters();
-            $parameters['category'] ??= 'all';
-            return view('products/product-list', [
-                'category' => $parameters['category'],
-                'products' => $products,
-                'delete' => true,
-            ] );
-        },
+        [ new DeleteProductsController( $router, $products, $categories ), 'handle' ]
     )->name('delete-product');
 
 
     $router->add(
         'GET', '/admin/products/{category?}',
-        function () use ($router, $products, $categories) {
-            $parameters = $router->current()->parameters();
-            $parameters['category'] ??= 'all';
-            return view('products/product-list', [
-                'categories' => $categories['admin'],
-                'category' => $parameters['category'],
-                'products' => $products,
-                'delete' => false,
-            ] );
-        },
+        [ new ListProductsController( $router, $products, $categories, true ), 'handle' ]
     )->name('list-product');
 
     $router->add(
         'GET', '/products/{category?}',
-        function () use ($router, $products, $categories) {
-            $parameters = $router->current()->parameters();
-            $parameters['category'] ??= 'all';
-            return view('home', [
-                'categories' => $categories['user-simple'],
-                'category' => $parameters['category'],
-                'products' => $products,
-            ] );
-        },
+        [ new ListProductsController( $router, $products, $categories ), 'handle' ]
     )->name('home-page');
-
 
     $router->add(
         'GET', '/dashboard',
-        function() use ($user, $orders) {
-            $result = [];
-            foreach($orders as $key => $order) {
-                if($order['status'] == 'en cours'){
-                    $result[] = $order; 
-                }
-            }
-            return view('dashboard/dashboard', [
-                'admin' => false,
-                'user' => $user,
-                'orders' => $result,
-            ]);
-        }
+        [ new ShowDashboardController( $router, $orders, $users ), 'handle' ]
     )->name('dashboard');
 
     $router->add(
         'GET', '/log-out',
-        fn() => view('users/signIn'),
+        [ LoginUserController::class, 'handle' ]
     )->name('log-out-user');
 
     $router->add(
         'GET', '/register',
-        fn() => view('users/signUp'),
+        [ RegisterUserController::class, 'handle' ]
     )->name('register-user');
 
 };
