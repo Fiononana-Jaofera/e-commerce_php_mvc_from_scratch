@@ -12,6 +12,14 @@ class RegisterUserController
 
     public function handle()
     {
-        return view( 'users/signUp' );
+        $data = validate( $_POST, [
+            'name' => ['required'],
+            'password' => ['required', 'min:6'],
+        ]);
+
+        // use to create database record
+        $_SESSION['Registered'] = true;
+
+        return redirect( $this->router->route('show-home-page') );
     }
 }

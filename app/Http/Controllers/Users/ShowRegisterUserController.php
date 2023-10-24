@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Users;
 
-class LoginUserController
+class ShowRegisterUserController
 {
 
     public function __construct()
@@ -12,6 +12,6 @@ class LoginUserController
 
     public function handle()
     {
-        return view( 'users/signIn' );
+        return view( 'users/signUp' );
     }
 }
