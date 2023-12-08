@@ -15,6 +15,7 @@ use App\Http\Controllers\Statistics\ShowStatisticsController;
 
 use App\Http\Controllers\Users\ListUsersController;
 use App\Http\Controllers\Users\LoginUserController;
+use App\Http\Controllers\Users\ShowRegisterFormController;
 use App\Http\Controllers\Users\RegisterUserController;
 
 use App\Http\Controllers\Dashboard\ShowDashboardController;
@@ -312,6 +313,7 @@ return function(Router $router) {
         ]
     ];
 
+    /**Requête GET*/
     $router->add(
         'GET', '/',
         fn() => $router->redirect('/products'),
@@ -395,7 +397,12 @@ return function(Router $router) {
 
     $router->add(
         'GET', '/register',
-        [ RegisterUserController::class, 'handle' ]
-    )->name('register-user');
+        [ new ShowRegisterFormController($router), 'handle' ]
+    )->name('show-register-form');
 
+    /**Requête POST*/
+    $router->add(
+        'POST', '/register',
+        [ new RegisterUserController($router), 'handle' ]
+    )->name('register-user');
 };
